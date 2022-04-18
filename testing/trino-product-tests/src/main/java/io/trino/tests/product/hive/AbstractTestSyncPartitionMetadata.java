@@ -13,8 +13,6 @@
  */
 package io.trino.tests.product.hive;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import io.trino.tempto.AfterTestWithContext;
 import io.trino.tempto.BeforeTestWithContext;
 import io.trino.tempto.ProductTest;
@@ -38,13 +36,9 @@ import static io.trino.tests.product.utils.QueryExecutors.onTrino;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TestSyncPartitionMetadata
+public abstract class AbstractTestSyncPartitionMetadata
         extends ProductTest
 {
-    @Inject
-    @Named("databases.hive.warehouse_directory_path")
-    private String warehouseDirectory;
-
     @BeforeTestWithContext
     public void setUp()
     {
@@ -236,10 +230,7 @@ public class TestSyncPartitionMetadata
         return schemaLocation() + '/' + tableName;
     }
 
-    protected String schemaLocation()
-    {
-        return warehouseDirectory;
-    }
+    protected abstract String schemaLocation();
 
     private void prepare(String tableName)
     {
