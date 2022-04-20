@@ -647,6 +647,10 @@ jobs:
           - config: hdp3
             suite: suite-2
             jdk: 17
+          # this suite is designed specifically for Azure Blob Filesystem
+          - config: abfs
+            suite: suite-abfs
+            jdk: 11
           # this suite is not meant to be run with different configs
           - config: default
             suite: suite-all
@@ -682,6 +686,10 @@ jobs:
           find . -type f -name \*-executable.jar -exec chmod 0777 {} \;
       - name: Product Tests (all)
         if: steps.filter.outputs.product-tests == 'true' || contains(github.event.pull_request.labels.*.name, 'tests:all') || contains(github.event.pull_request.labels.*.name, 'tests:all-product')
+        env:
+          ABFS_CONTAINER: ${{ secrets.AZURE_ABFS_CONTAINER }}
+          ABFS_ACCOUNT: ${{ secrets.AZURE_ABFS_ACCOUNT }}
+          ABFS_ACCESS_KEY: ${{ secrets.AZURE_ABFS_ACCESSKEY }}
         run: |
           testing/bin/ptl suite run \
             --suite ${{ matrix.suite }} \
